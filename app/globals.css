@@ -1,0 +1,269 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Display typeface ───────────────────────────────────────────────────────
+   TT Norms Pro is a licensed font. Drop the two woff2 files referenced below
+   into /public/fonts/ to activate it — Inter (loaded above) is the live
+   fallback today and was chosen to sit close to TT Norms Pro's geometry, so
+   the page already looks correct without the license files. */
+@font-face {
+  font-family: 'TT Norms Pro';
+  src: url('/fonts/tt-norms-pro-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'TT Norms Pro';
+  src: url('/fonts/tt-norms-pro-semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-display: swap;
+}
+
+/* ── Design Tokens ──────────────────────────────────────────────────────────── */
+:root {
+  --nav-height: 76px;
+
+  --bg: #F5F5F5;
+  --surface: #FFFFFF;
+  --surface-dark: #2B2644;
+  --surface-sunken: #FAFAFA;
+
+  --text: #0A0A0A;
+  --text-secondary: rgba(0,0,0,0.65);
+  --muted: rgba(0,0,0,0.45);
+  --dim: rgba(0,0,0,0.30);
+
+  --border: rgba(0,0,0,0.08);
+  --border-soft: rgba(0,0,0,0.05);
+  --border-bright: rgba(0,0,0,0.14);
+
+  --brand: #2563EB;
+  --success: #16A34A;
+  --danger: #E11D48;
+}
+
+/* ── Base Reset ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: 'TT Norms Pro', 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--bg);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+::selection { background: rgba(0,0,0,0.1); color: #000; }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.14); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.24); }
+
+/* Remove the default blue browser outline; visible focus is reinstated via
+   focus-visible below so keyboard accessibility is never lost. */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid rgba(0,0,0,0.4);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Utility layer ───────────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Headline emphasis — flat, confident black. The brief calls for "no
+     gradients everywhere" and a luxury-minimal feel, so emphasis comes from
+     weight, not color: emphasised spans keep the same black as the rest of
+     the headline. Kept as a class (rather than deleting every usage) so
+     existing markup needs no structural changes. */
+  .gradient-text,
+  .gradient-text-brand,
+  .gradient-text-cyan {
+    color: var(--text);
+  }
+
+  /* Frosted surfaces — used for the floating navbar and dropdown panels */
+  .glass {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid var(--border-soft);
+  }
+  .glass-bright {
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(24px) saturate(1.5);
+    -webkit-backdrop-filter: blur(24px) saturate(1.5);
+    border: 1px solid var(--border);
+  }
+  .glass-nav {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  /* Noise texture overlay — subtle grain, works on light or dark surfaces */
+  .noise::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 1;
+  }
+
+  /* Shimmer loading skeleton */
+  .shimmer {
+    background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s linear infinite;
+  }
+
+  /* Clamp typography */
+  .text-hero    { font-size: clamp(2.75rem, 6vw, 5rem); }
+  .text-section { font-size: clamp(1.875rem, 3.5vw, 3rem); }
+  .text-card-h  { font-size: clamp(1rem, 1.5vw, 1.125rem); }
+
+  /* Drop zone states */
+  .dropzone {
+    border: 2px dashed rgba(0,0,0,0.14);
+    transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
+  }
+  .dropzone:hover {
+    border-color: rgba(0,0,0,0.32);
+    background: rgba(0,0,0,0.015);
+  }
+  .dropzone-over {
+    border-color: #000 !important;
+    background: rgba(0,0,0,0.035) !important;
+    transform: scale(1.01);
+  }
+
+  /* Prose text helpers */
+  .text-muted { color: var(--muted); }
+  .text-dim   { color: var(--dim); }
+}
+
+/* ── Keyframes ───────────────────────────────────────────────────────────────── */
+@keyframes float {
+  0%,100% { transform: translateY(0px); }
+  50%     { transform: translateY(-14px); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+@keyframes fadeUp {
+  0%   { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  0%   { opacity: 0; transform: scale(0.92); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes slideRight {
+  0%   { opacity: 0; transform: translateX(-20px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes progressBar {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+@keyframes checkDraw {
+  0%   { stroke-dashoffset: 30; }
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Component classes ───────────────────────────────────────────────────────── */
+
+/* Primary pill button — black, rounded-full, the workhorse CTA across the
+   whole app (per MASTER UI REDESIGN PROMPT "BUTTON DESIGN"). */
+.btn-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #fff;
+  background: #000;
+  border: 1px solid rgba(0,0,0,0.06);
+  transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-brand:hover {
+  background: #222;
+  transform: scale(1.03);
+}
+.btn-brand:active { transform: scale(0.97); }
+
+/* Secondary / outlined button */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.1);
+  transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-ghost:hover {
+  background: #fff;
+  border-color: rgba(0,0,0,0.16);
+  transform: scale(1.02);
+}
+.btn-ghost:active { transform: scale(0.97); }
+
+/* Category header pills */
+.category-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Nav link */
+.nav-link {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(0,0,0,0.6);
+  transition: color 0.15s, background 0.15s;
+}
+.nav-link:hover { color: #000; background: rgba(0,0,0,0.04); }
+.nav-link.active { color: #000; background: rgba(0,0,0,0.06); }

@@ -1,0 +1,28 @@
+# Netlify deployment configuration for this Next.js 14 (App Router) app.
+#
+# The official @netlify/plugin-nextjs plugin is required — without it,
+# Netlify serves this as a static export and every /api/* route (i.e. every
+# PDF tool) returns 404, since App Router API routes need to run as Netlify
+# Functions. Netlify auto-installs this plugin for detected Next.js sites,
+# but it's declared explicitly here so the build is reproducible regardless
+# of dashboard settings.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# ── Known constraint: serverless function timeouts ───────────────────────
+# Some routes set a long `maxDuration` (see e.g. app/api/pdf/ocr/route.js,
+# which sets 180s for multi-page OCR). That export is primarily honored on
+# Vercel; on Netlify, function execution time is governed by your Netlify
+# plan instead (Functions on free/starter tiers are capped well below that —
+# currently 10s by default, extendable via plan upgrades or Background
+# Functions for long-running jobs). Large scanned-PDF OCR jobs may need a
+# higher-tier Netlify plan or a background/queued architecture to reliably
+# complete — see the OCR PDF section of the project README for details.
